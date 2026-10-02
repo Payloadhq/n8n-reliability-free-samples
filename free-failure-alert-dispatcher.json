@@ -1,0 +1,212 @@
+{
+  "name": "Payload \u2014 Failure Alert Dispatcher (FREE SAMPLE)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## FREE SAMPLE \u2014 Failure Alert Dispatcher\n\nThis is a free sample from the **n8n Production AI Agent Reliability Kit**\n($99, one-time) \u2014 the full kit includes 10 importable workflows, a failure\nsimulator, an eval runner, readiness scoring, and PDF reports:\nhttps://payloadtools.gumroad.com/l/n8n-agent-reliability-kit\n\nGet the full kit: https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit\nMore Payload tools: https://payloadtools.gumroad.com\n\n### What this workflow does\nWhen any n8n workflow fails, this workflow runs as its **Error Workflow**,\nextracts the failure context (workflow name, execution id, failed node,\nerror message), skips alerts for manual test runs, and POSTs a JSON alert\nto your webhook (Slack, Discord, PagerDuty, Opsgenie \u2014 anything with a URL).\n\n### Setup (2 minutes, no credentials needed)\n1. Create a webhook URL at your alerting tool of choice.\n2. In the **Build Alert Payload** node, replace `PASTE_YOUR_WEBHOOK_URL_HERE`.\n3. In the n8n workflow you want to monitor: open its Settings and set\n   **Error Workflow** to this workflow.\n4. Trigger a failure (or click Test) and confirm the alert arrives.\n\nThe full Reliability Kit adds 8 more workflows on top of this pattern:\nguardrailed subworkflows, LLM cost metering, structured-output validation,\nretry handoffs, debug tracing, iteration kill-switches, nightly digests,\nand output sanitization.\n",
+        "height": 320,
+        "width": 560,
+        "color": 4
+      },
+      "id": "b42c5a25-a1d6-485d-b31e-908481e79315",
+      "name": "SETUP \u2014 Read Me First",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "bc71a21c-85a7-4aae-a790-eb08a73c5e45",
+      "name": "On Execution Failure",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract the failure context n8n passes to an Error Workflow.\nconst item = $input.first().json;\nconst exec = item.execution || {};\nconst workflow = item.workflow || {};\nreturn [{\n  json: {\n    workflow_name: workflow.name || 'unknown workflow',\n    workflow_id: workflow.id || null,\n    execution_id: exec.id || null,\n    execution_url: exec.url || null,\n    execution_mode: exec.mode || 'unknown',\n    failed_node: item.nodeName || item.node_name || 'unknown node',\n    error_message: (item.error && (item.error.message || item.error.description)) || String(item.error || 'unknown error'),\n    failed_at: new Date().toISOString(),\n  }\n}];"
+      },
+      "id": "27e50966-ba49-409c-a537-b0d6499b2913",
+      "name": "Extract Failure Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "caseSensitive": true,
+          "leftValue": "",
+          "typeValidation": "loose"
+        },
+        "conditions": [
+          {
+            "id": "93dd1d6f-b379-43f2-8669-267d1a6d8f09",
+            "leftValue": "={{ $json.execution_mode }}",
+            "rightValue": "manual",
+            "operator": {
+              "type": "string",
+              "operation": "equals",
+              "name": "filter.operator.string.equals"
+            }
+          }
+        ],
+        "combinator": "and",
+        "looseTypeValidation": true
+      },
+      "id": "4a774cf9-32e0-4bdf-b987-249540c74fc3",
+      "name": "Is Manual Test Run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        0,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build the alert payload. Replace the webhook URL with your own\n// (Slack / Discord / PagerDuty / Opsgenie incoming-webhook URL).\nconst f = $input.first().json;\nconst alert = {\n  text: \"n8n workflow FAILED: \" + f.workflow_name,\n  severity: \"high\",\n  workflow_name: f.workflow_name,\n  execution_id: f.execution_id,\n  execution_url: f.execution_url,\n  failed_node: f.failed_node,\n  error_message: f.error_message,\n  failed_at: f.failed_at,\n};\nreturn [{ json: { webhook_url: \"PASTE_YOUR_WEBHOOK_URL_HERE\", alert } }];"
+      },
+      "id": "3bf4802f-85f9-4650-b3cb-0cc9c5baa3f9",
+      "name": "Build Alert Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.webhook_url }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.alert) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "ff7e7ec2-a5a3-45b9-873c-d4f67bb6a89a",
+      "name": "Send Alert Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4ad21e53-6995-4371-8d1f-e04225c3f049",
+      "name": "Alert Sent",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        480,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "fc7e6ed2-41d9-4bc0-a43f-b7929b4bc84a",
+      "name": "Skip Alert (manual run)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        240,
+        560
+      ]
+    }
+  ],
+  "connections": {
+    "On Execution Failure": {
+      "main": [
+        [
+          {
+            "node": "Extract Failure Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Failure Context": {
+      "main": [
+        [
+          {
+            "node": "Is Manual Test Run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Manual Test Run?": {
+      "main": [
+        [
+          {
+            "node": "Skip Alert (manual run)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Alert Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Alert Payload": {
+      "main": [
+        [
+          {
+            "node": "Send Alert Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Alert Webhook": {
+      "main": [
+        [
+          {
+            "node": "Alert Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Chicago"
+  },
+  "pinData": {},
+  "tags": [
+    {
+      "name": "payload"
+    },
+    {
+      "name": "reliability"
+    },
+    {
+      "name": "free-sample"
+    }
+  ]
+}
