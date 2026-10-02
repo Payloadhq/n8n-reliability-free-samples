@@ -1,0 +1,210 @@
+{
+  "name": "Payload \u2014 HTTP Timeout Circuit Breaker (FREE SAMPLE)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## FREE SAMPLE \u2014 HTTP Timeout Circuit Breaker\n\nThis is a free sample from the **n8n Production AI Agent Reliability Kit**\n($99, one-time) \u2014 the full kit includes 10 importable workflows, a failure\nsimulator, an eval runner, readiness scoring, and PDF reports:\nhttps://payloadtools.gumroad.com/l/n8n-agent-reliability-kit\n\nGet the full kit: https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit\nMore Payload tools: https://payloadtools.gumroad.com\n\n### What this workflow does\nCalls a slow API with a short timeout. If the call times out or errors,\nthe workflow **does not crash** \u2014 it classifies the outcome and routes to\na degraded-mode fallback (cached/stale data, a safe default, or a queued\nretry) instead of failing your agent mid-run.\n\n### Setup (no credentials needed)\n1. Click **Execute** \u2014 the demo calls https://httpbin.org/delay/8 with a\n   4-second timeout, so it deterministically times out and takes the\n   fallback path.\n2. Replace the URL with your own fragile API, set the timeout that fits\n   your SLA, and put your real fallback logic in the\n   **Degraded-Mode Fallback** node.\n3. Copy this pattern in front of every external call your agents depend on.\n\nThe full Reliability Kit adds 8 more workflows: failure alerting, tool\nguardrails, LLM cost metering, structured-output validation, retry\nhandoffs, debug tracing, iteration kill-switches, and nightly digests.\n",
+        "height": 320,
+        "width": 560,
+        "color": 4
+      },
+      "id": "80faeb99-8d7f-4c15-81f6-f7b9b0d66a59",
+      "name": "SETUP \u2014 Read Me First",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        160
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "8d0a1cf1-5383-4521-b17c-19f4cd382626",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://httpbin.org/delay/8",
+        "options": {
+          "timeout": 4000
+        },
+        "onError": "continueErrorOutput"
+      },
+      "id": "38a44fa4-8bf7-468f-8825-38335a8a56cd",
+      "name": "Fragile API Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Classify the HTTP outcome. The HTTP node is set to continue on\n// error, so a timeout lands here as an error payload instead of a crash.\nconst j = $input.first().json;\nif (j && j.error) {\n  return [{ json: { ok: false, reason: \"http_error\", detail: String(j.error.message || j.error).slice(0, 300) } }];\n}\nreturn [{ json: { ok: true, data: j } }];"
+      },
+      "id": "c1d3dfa7-2f7b-4140-b28b-d7cd5b1f5cf7",
+      "name": "Classify Outcome",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "caseSensitive": true,
+          "leftValue": "",
+          "typeValidation": "loose"
+        },
+        "conditions": [
+          {
+            "id": "c39bddf6-9ac3-48ca-a364-3e58e38e47ca",
+            "leftValue": "={{ $json.ok }}",
+            "rightValue": true,
+            "operator": {
+              "type": "boolean",
+              "operation": "true",
+              "singleValue": true
+            }
+          }
+        ],
+        "combinator": "and",
+        "looseTypeValidation": true
+      },
+      "id": "c63a57ac-b2a2-4f4b-862a-dc7b602be9df",
+      "name": "Call Succeeded?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        240,
+        400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e959ea8c-bd91-420a-830c-c8ef5d1dc010",
+      "name": "Use Live Data",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        480,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// DEGRADED MODE: the live API did not answer in time.\n// Put your real fallback here: cached value, stale snapshot, safe default,\n// or a queue entry for later retry. This demo returns a safe default.\nconst c = $input.first().json;\nreturn [{\n  json: {\n    mode: \"degraded_fallback\",\n    reason: c.reason,\n    detail: c.detail,\n    data: { note: \"fallback data \u2014 live API timed out\", as_of: new Date().toISOString() },\n  }\n}];"
+      },
+      "id": "90bef8b6-d418-4779-b2ef-1f51e167e4ff",
+      "name": "Degraded-Mode Fallback",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        560
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "32357a66-2941-4684-a08a-39b7dc45f6e8",
+      "name": "Use Fallback",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        720,
+        560
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Fragile API Call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fragile API Call": {
+      "main": [
+        [
+          {
+            "node": "Classify Outcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Outcome": {
+      "main": [
+        [
+          {
+            "node": "Call Succeeded?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Succeeded?": {
+      "main": [
+        [
+          {
+            "node": "Use Live Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Degraded-Mode Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Degraded-Mode Fallback": {
+      "main": [
+        [
+          {
+            "node": "Use Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Chicago"
+  },
+  "pinData": {},
+  "tags": [
+    {
+      "name": "payload"
+    },
+    {
+      "name": "reliability"
+    },
+    {
+      "name": "free-sample"
+    }
+  ]
+}
