@@ -4,6 +4,8 @@ Two genuinely useful, fully standalone n8n workflows — free samples from the
 **n8n Production AI Agent Reliability Kit**
 ([$99 one-time](https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit)).
 
+These samples are v1.0.1-era extracts; the paid kit is the current version.
+
 Import each JSON into n8n (**Workflows → Import from File**). No credentials,
 no setup accounts, no external dependencies beyond the webhook URL you paste
 in the alert dispatcher.
@@ -55,3 +57,10 @@ These two workflows are **2 of the 10 workflows** in the paid kit. The full
 - **More Payload repos** — https://github.com/Payloadhq
 
 Support: kylers.partners@gmail.com · "Small software that earns its keep."
+
+---
+
+**Payload** — small, sharp tools for developers.
+Developer portal: https://payloadhq.github.io/ ·
+All products: https://payloadtools.gumroad.com/ ·
+Contact: kylers.partners@gmail.com
