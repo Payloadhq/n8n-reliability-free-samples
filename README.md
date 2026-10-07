@@ -84,3 +84,9 @@ https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit
 Developer portal: https://payloadhq.github.io/ ·
 All products: https://payloadtools.gumroad.com/ ·
 Contact: kylers.partners@gmail.com
+
+---
+
+**More from Payload** · [payloadhq.github.io](https://payloadhq.github.io/) · [all Payload repos](https://github.com/Payloadhq)
+
+Related: [n8n-workflow-linter](https://github.com/Payloadhq/n8n-workflow-linter)
