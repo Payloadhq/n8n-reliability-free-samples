@@ -6,7 +6,7 @@ Two genuinely useful, fully standalone n8n workflows — **free samples** from t
 **n8n Production AI Agent Reliability Kit**
 ([$99 one-time](https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit)).
 
-These samples are v1.0.1-era extracts; the paid kit is the current version.
+These samples are extracts from an earlier kit version; the paid kit is the current version.
 
 ## Who it's for
 
@@ -25,8 +25,8 @@ in the alert dispatcher.
 Catches failures across your n8n workflows and alerts you instead of letting
 agents fail silently.
 
-**Flow:** Error Trigger → Extract Failure Context → Is Manual Test Run?
-→ Build Alert Payload → HTTP POST to your webhook → Alert Sent
+**Flow:** On Execution Failure → Extract Failure Context → Is Manual Test Run?
+→ Build Alert Payload → Send Alert Webhook → Alert Sent
 (manual test runs are skipped).
 
 **Setup:**
@@ -40,7 +40,7 @@ agents fail silently.
 
 Stops one slow API from taking down your whole agent run.
 
-**Flow:** Manual Trigger → Fragile API Call (4s timeout, continue-on-error)
+**Flow:** Start → Fragile API Call (4s timeout, continue-on-error)
 → Classify Outcome → Call Succeeded? → Use Live Data **or**
 Degraded-Mode Fallback → Use Fallback.
 
@@ -51,14 +51,14 @@ fallback (cached value, safe default, queued retry) in the fallback node.
 
 ## What these free samples do NOT include
 
-- These are 2 of the 10 workflows in the paid kit. The full
+- These are two of the workflows in the paid kit. The full
   [$99 kit](https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit) adds:
   - Tool guardrail subworkflow, LLM cost meter, structured-output validator
   - Empty-result retry handoff, subworkflow debug tracer
   - Iteration-cap kill-switch, nightly reliability digest, agent output sanitizer
   - A failure simulator to test your guardrails before production
   - An eval runner + readiness scoring with PDF reports
-- The samples are v1.0.1-era extracts. The paid kit is the current version with updates.
+- The samples are extracts from an earlier kit version. The paid kit is the current version with updates.
 
 ## Price
 
