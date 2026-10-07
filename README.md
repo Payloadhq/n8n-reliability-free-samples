@@ -1,16 +1,26 @@
-# n8n Reliability — Free Sample Workflows (by Payload)
+# n8n Reliability — Free Sample Workflows
 
-Two genuinely useful, fully standalone n8n workflows — free samples from the
+*by Payload*
+
+Two genuinely useful, fully standalone n8n workflows — **free samples** from the
 **n8n Production AI Agent Reliability Kit**
 ([$99 one-time](https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit)).
 
 These samples are v1.0.1-era extracts; the paid kit is the current version.
 
+## Who it's for
+
+Anyone running AI agents on n8n who wants production reliability patterns — silent-failure alerting and API timeout resilience — before buying the full kit.
+
+## What you receive (free)
+
+Two import-ready n8n workflow JSON files, in this repo, free to use:
+
 Import each JSON into n8n (**Workflows → Import from File**). No credentials,
 no setup accounts, no external dependencies beyond the webhook URL you paste
 in the alert dispatcher.
 
-## 1. Failure Alert Dispatcher — `free-failure-alert-dispatcher.json`
+### 1. Failure Alert Dispatcher — `free-failure-alert-dispatcher.json`
 
 Catches failures across your n8n workflows and alerts you instead of letting
 agents fail silently.
@@ -26,7 +36,7 @@ agents fail silently.
    → select this workflow.
 4. Trigger a failure and confirm the alert arrives.
 
-## 2. HTTP Timeout Circuit Breaker — `free-http-timeout-circuit-breaker.json`
+### 2. HTTP Timeout Circuit Breaker — `free-http-timeout-circuit-breaker.json`
 
 Stops one slow API from taking down your whole agent run.
 
@@ -39,24 +49,34 @@ a 4-second timeout, so it deterministically times out and takes the fallback
 path — then replace the URL with your own fragile API and put your real
 fallback (cached value, safe default, queued retry) in the fallback node.
 
-## What's in the full Reliability Kit
+## What these free samples do NOT include
 
-These two workflows are **2 of the 10 workflows** in the paid kit. The full
-[$99 kit](https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit) adds:
+- These are 2 of the 10 workflows in the paid kit. The full
+  [$99 kit](https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit) adds:
+  - Tool guardrail subworkflow, LLM cost meter, structured-output validator
+  - Empty-result retry handoff, subworkflow debug tracer
+  - Iteration-cap kill-switch, nightly reliability digest, agent output sanitizer
+  - A failure simulator to test your guardrails before production
+  - An eval runner + readiness scoring with PDF reports
+- The samples are v1.0.1-era extracts. The paid kit is the current version with updates.
 
-- Tool guardrail subworkflow, LLM cost meter, structured-output validator
-- Empty-result retry handoff, subworkflow debug tracer
-- Iteration-cap kill-switch, nightly reliability digest, agent output sanitizer
-- A failure simulator to test your guardrails before production
-- An eval runner + readiness scoring with PDF reports
+## Price
+
+**Free.** These two workflows cost nothing and need no purchase.
+
+The full n8n Production AI Agent Reliability Kit is **$99 one-time**:
+https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit
+
+## Support
+
+- Support: kylers.partners@gmail.com
+- "Small software that earns its keep."
 
 ## Payload Tools ecosystem
 
 - **n8n Production AI Agent Reliability Kit** — https://payloadtools.gumroad.com/l/n8n-agent-reliability-kit
 - **All Payload products** — https://payloadtools.gumroad.com
 - **More Payload repos** — https://github.com/Payloadhq
-
-Support: kylers.partners@gmail.com · "Small software that earns its keep."
 
 ---
 
